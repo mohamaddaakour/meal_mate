@@ -8,3 +8,13 @@ export interface Category {
 export interface CategoriesResponse {
     categories: Category[] | null;
 }
+
+export interface MealSummary {
+    idMeal: string;
+    strMeal: string;
+    strMealThumb: string;
+}
+
+export interface SearchMealResponse {
+    meals: MealSummary[] | null;
+}
