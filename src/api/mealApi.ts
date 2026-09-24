@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
-import type { Category, CategoriesResponse, SearchMealResponse, MealSummary } from "./types";
+import type { Category, CategoriesResponse, SearchMealResponse, MealSummary, MealFull, LookupMealResponse } from "./types";
 
 // Create an axios instance with the base URL
 export const apiClient: AxiosInstance = axios.create({
@@ -22,4 +22,16 @@ export async function searchMeals(query: string): Promise<MealSummary[]> {
     });
 
     return res.data.meals ?? [];
+}
+
+export async function getMealById(id: string): Promise<MealFull | null> {
+    const res = await apiClient.get<LookupMealResponse>("/lookup.php", {
+        params: { i: id },
+    });
+
+    const meals = res.data.meals;
+
+    // `&&` here means if meals is not falsy check what is in the right side
+    // if meals is falsy return null
+    return meals && meals.length > 0 ? meals[0] : null;
 }
