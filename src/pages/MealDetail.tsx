@@ -18,7 +18,7 @@ export default function MealDetail() {
   }
 
   if (isPending) {
-    return <p>Loading recipe…</p>;
+    return <p>Loading recipe ...</p>;
   }
 
   if (isError) {
