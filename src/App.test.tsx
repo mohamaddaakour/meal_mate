@@ -1,18 +1,40 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
-import { describe, expect, it } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { describe, expect, it, vi } from "vitest";
+import { ThemeProvider } from "./context/ThemeContext";
+import favoritesReducer from "./store/favoritesSlice";
 import App from "./App";
+
+// Keep tests off the real network.
+vi.mock("./api/mealApi", () => ({
+  getCategories: vi.fn().mockResolvedValue([]),
+  searchMeals: vi.fn().mockResolvedValue([]),
+  getMealById: vi.fn().mockResolvedValue(null),
+}));
 
 // This is a small reusable helper. Instead of repeating
 // the same render logic in every test, renderApp() wraps <App />
-// inside <MemoryRouter>, starting at the "/" route (the homepage). Every test
-// calls this function to get the app rendered and ready to interact with.
+// in every provider it needs, starting at the "/" route (the homepage).
 function renderApp() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  const store = configureStore({ reducer: { favorites: favoritesReducer } });
+
   return render(
-    <MemoryRouter initialEntries={["/"]}>
-      <App />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <ThemeProvider>
+          <MemoryRouter initialEntries={["/"]}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    </QueryClientProvider>,
   );
 }
 
