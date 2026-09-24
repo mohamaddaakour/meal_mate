@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* This is Tailwind CSS v4 syntax. It tells Tailwind:
+   "When I write dark: in a class name, apply it when the element
+    is inside (or is) an element with the class dark */
+@custom-variant dark (&:where(.dark, .dark *));
